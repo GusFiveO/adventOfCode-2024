@@ -73,7 +73,12 @@ class Guard:
         self.position = new_position
 
     def patrol(self):
+        history = {"<": [], "^": [], ">": [], "v": []}
         while self.state is not State.OUT:
+            if check_history(history, self.direction, self.position):
+                return self.visited_postions
+            else:
+                history[guard.direction].append(guard.position)
             while self.state is State.FREE:
                 self.move_forward()
             if self.state is State.BLOCKED:
@@ -85,6 +90,12 @@ class Guard:
             print(row)
 
 
+def check_history(history, direction, position):
+    if position in history[direction]:
+        return True
+    return False
+
+
 guard_map_path = sys.argv[1]
 with open(guard_map_path) as file:
     lines = file.read().splitlines()
@@ -92,4 +103,4 @@ with open(guard_map_path) as file:
 guard = Guard(guard_map)
 visited_position = guard.patrol()
 guard.print_map()
-print(f"The guard visited {visited_position} positions !")
+print(f"The guard visited {visited_position} positions!")
